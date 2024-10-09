@@ -176,3 +176,50 @@ solve satisfy;
 
 Вывод:  
 ![pract2_5](https://raw.githubusercontent.com/Codemaster272/KonfigMIREA/refs/heads/main/pract/images/pract2/pract2_5.png)  
+
+## Задача 6
+
+Задание:Решить на MiniZinc задачу о зависимостях пакетов для следующих данных:  
+
+root 1.0.0 зависит от foo ^1.0.0 и target ^2.0.0.  
+foo 1.1.0 зависит от left ^1.0.0 и right ^1.0.0.  
+foo 1.0.0 не имеет зависимостей.  
+left 1.0.0 зависит от shared >=1.0.0.  
+right 1.0.0 зависит от shared <2.0.0.  
+shared 2.0.0 не имеет зависимостей.  
+shared 1.0.0 зависит от target ^1.0.0.  
+target 2.0.0 и 1.0.0 не имеют зависимостей.  
+
+__Решение:__  
+Код программы:  
+```MiniZinc
+set of int: FooVersion = {100, 110};   
+set of int: LeftVersion = {100};   
+set of int: RightVersion = {100};      
+set of int: SharedVersion = {200};     
+set of int: TargetVersion = {100, 200};
+
+var FooVersion: foo;
+var LeftVersion: left;
+var RightVersion: right;
+var SharedVersion: shared;
+var TargetVersion: target;
+
+% root 1.0.0 depends on foo ^1.0.0 and target ^2.0.0
+constraint foo >= 100 /\ target = 200;
+
+% foo 1.1.0 depends on left ^1.0.0 and right ^1.0.0
+constraint if foo = 110 then left >= 100 /\ right >= 100 else true endif;
+
+% left 1.0.0 depends on shared >= 1.0.0
+constraint if left = 100 then shared >= 100 else true endif;
+
+% right 1.0.0 depends on shared < 2.0.0
+
+% constraint if right = 100 then shared < 200 else true endif;
+
+solve satisfy;
+```
+
+Вывод:  
+![image](https://github.com/user-attachments/assets/cd3be6b1-7315-431e-897e-6a8cfdb44fff)
