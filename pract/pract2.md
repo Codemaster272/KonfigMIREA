@@ -126,3 +126,53 @@ __Решение:__
 
 На основе graphviz-кода генерируем граф  
 ![ExpressGraph](https://raw.githubusercontent.com/Codemaster272/KonfigMIREA/refs/heads/main/pract/images/pract2/ExpressGraph.png) 
+
+## Задача 4
+
+_Задание: Решить на MiniZinc задачу о счастливых билетах. Добавить ограничение на то, что все цифры билета должны быть различными (подсказка: используйте all_different). Найти минимальное решение для суммы 3 цифр._
+
+
+__Решение:__  
+Код программы:  
+```MiniZinc
+include "globals.mzn";
+
+array[1..6] of var 0..9: digits;
+constraint all_different(digits);
+
+var int: sum_first = sum(digits[1..3]);
+var int: sum_last = sum(digits[4..6]);
+
+constraint sum_first = sum_last;
+solve minimize sum_first;
+```
+Вывод:  
+![pract2_4](https://raw.githubusercontent.com/Codemaster272/KonfigMIREA/refs/heads/main/pract/images/pract2/pract2_4.png)  
+
+## Задача 5
+
+_Задание: Решить на MiniZinc задачу о зависимостях пакетов для рисунка, приведенного ниже._  
+Рисунок к заданию:  
+
+![Task_image](https://raw.githubusercontent.com/true-grue/kisscm/refs/heads/main/pract/images/pubgrub.png)  
+
+__Решение:__  
+Код программы:  
+```MiniZinc
+set of int: MenuVersion = {100, 110, 120, 130, 150};
+set of int: DropdownVersion = {230, 220, 210, 200, 180};
+set of int: IconsVersion = {100, 200};
+
+var MenuVersion: menu;
+var DropdownVersion: dropdown;
+var IconsVersion: icons;
+
+constraint if menu >= 110 then dropdown >= 200 else dropdown = 180 endif;
+
+constraint if dropdown <= 200 /\ dropdown > 180 then icons = 200 else icons = 100 endif;
+
+solve satisfy;
+```
+
+Вывод:  
+![pract2_5](https://raw.githubusercontent.com/Codemaster272/KonfigMIREA/refs/heads/main/pract/images/pract2/pract2_5.png)  
